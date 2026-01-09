@@ -152,3 +152,43 @@ def getAllUsersInOrganization(current_user: User, db: Session, skip: int = 0, li
     
     return users
 # --------------------------------------------------------------------------------
+
+
+# ==== Update Functions ==== #
+
+
+
+# --------------------------------------------------------------------------------
+def updateOwnProfile(data:UserUpdate , current_user:User , db:Session):
+    user_repo = UserRepository(db)
+
+    if data.role is not None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You cannot change your own role"
+        )
+    
+    # Users cannot change their organization
+    if data.org_id is not None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You cannot change your organization"
+        )
+    
+    if data.email is not None and data.email != current_user.email:
+        if user_repo.email_exists(data.email):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already exists"
+            )
+        
+    if data.password is not None:
+        data.password = hash_password(data.password)
+
+    updated_user = user_repo.update(current_user.id, data)
+
+    return updated_user
+# --------------------------------------------------------------------------------
+
+    
+

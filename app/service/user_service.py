@@ -93,3 +93,25 @@ def updateUser(data: UserUpdate, target_user_id: int, current_user: User, db: Se
     updated_user = user_repo.update(target_user_id, data)
 
     return updated_user
+
+def getUserById(user_id: int, current_user: User, db: Session):
+    user_repo = UserRepository(db)
+    
+    # Get user by ID
+    user = user_repo.get_by_id(user_id)
+    
+    # Check if user exists
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Check if both users are in same organization
+    if user.org_id != current_user.org_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Cannot access users from different organizations"
+        )
+    
+    return user

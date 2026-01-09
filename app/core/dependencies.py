@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt , JWTError
 from app.core.security import SECRET_KEY, ALGORITHM
-from app.db.repository.user import get_by_id
+from app.db.repository.user import UserRepository
 from app.core.database import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
@@ -15,15 +15,16 @@ def get_current_user(token : str = Depends(oauth2_scheme) , db=Depends(get_db)):
         if user_id is None : 
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid toke payload"
+                detail="Invalid token payload"
             )
         
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid toke"
+            detail="Invalid token"
         )
-    user = get_by_id(db , user_id)
+    user_repo = UserRepository(db)
+    user = user_repo.get_by_id(user_id)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

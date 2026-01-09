@@ -126,7 +126,6 @@ def getAllUsersInOrganization(current_user: User, db: Session, skip: int = 0, li
 # ==== Update Functions ==== #
 
 
-
 # --------------------------------------------------------------------------------
 def updateOwnProfile(data:UserUpdate , current_user:User , db:Session):
     user_repo = UserRepository(db)
@@ -192,5 +191,33 @@ def updateUser(data: UserUpdate, target_user_id: int, current_user: User, db: Se
     return updated_user
 #---------------------------------------------------------------------------------
 
-    
 
+# ==== Delete Functions ==== #
+
+
+#---------------------------------------------------------------------------------
+def deleteUser(target_user_id : int , current_user:User , db:Session):
+    user_repo = UserRepository(db)
+    user = user_repo.get_by_id(target_user_id)
+
+    if user is None :
+        raise HTTPException(404 , detail="user does not execit ")
+    
+    
+    if current_user.role != "owner" :
+        raise HTTPException(403 , "U dont have the enough permesion")
+    
+    if user.org_id != current_user.org_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Cannot delete users from different organizations"
+        )
+    
+    if target_user_id == current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot delete yourself"
+        )
+    
+    return user_repo.delete(target_user_id)
+#---------------------------------------------------------------------------------

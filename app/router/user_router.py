@@ -5,7 +5,7 @@ from app.core.dependencies import get_current_user
 from app.db.schema.user import UserResponse , UserUpdate
 from app.db.models.user import User
 from typing import List
-from app.service.user_service import getCurrentUserProfile , getAllUsersInOrganization , getUserById , updateUser,deleteUser
+from app.service.user_service import getCurrentUserProfile , getAllUsersInOrganization , getUserById , updateUser,deleteUser,updateOwnProfile
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -27,7 +27,7 @@ def update_own_profile(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)  
 ):
-    return update_own_profile(data=data , current_user=current_user , db=db)
+    return updateOwnProfile(data=data , current_user=current_user , db=db)
 #-------------------------------------------------------------------
 
 

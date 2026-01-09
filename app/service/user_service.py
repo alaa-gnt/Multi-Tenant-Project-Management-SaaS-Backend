@@ -196,16 +196,21 @@ def updateUser(data: UserUpdate, target_user_id: int, current_user: User, db: Se
 
 
 #---------------------------------------------------------------------------------
-def deleteUser(target_user_id : int , current_user:User , db:Session):
+def deleteUser(target_user_id: int, current_user: User, db: Session):
     user_repo = UserRepository(db)
     user = user_repo.get_by_id(target_user_id)
 
-    if user is None :
-        raise HTTPException(404 , detail="user does not execit ")
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User does not exist"
+        )
     
-    
-    if current_user.role != "owner" :
-        raise HTTPException(403 , "U dont have the enough permesion")
+    if current_user.role != "owner":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission"
+        )
     
     if user.org_id != current_user.org_id:
         raise HTTPException(
@@ -217,6 +222,12 @@ def deleteUser(target_user_id : int , current_user:User , db:Session):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="You cannot delete yourself"
+        )
+    
+    if user.role == "owner":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete organization owner"
         )
     
     return user_repo.delete(target_user_id)

@@ -3,6 +3,7 @@ from app.db.repository import UserRepository
 from app.db.schema import UserCreate, UserUpdate, UserResponse, UserLogin
 from app.core.security import hash_password, verify_password, create_access_token
 from fastapi import HTTPException, status
+from app.db.models.user import User
 
 
 def userRegistration(data: UserCreate, db: Session) -> UserResponse:
@@ -60,4 +61,35 @@ def userLogin(data: UserLogin, db: Session):
             "org_id": user.org_id
         }
     }
+
+
+def updateUser(data: UserUpdate, target_user_id: int, current_user: User, db: Session):
+    user_repo = UserRepository(db)
+
+    user = user_repo.get_by_id(target_user_id)
+
+    if not user:
+        raise HTTPException(404 , detail="user not found")
     
+    if user.org_id != current_user.org_id:
+        raise HTTPException(404 , "cant update user from diffrent  organization")
+    
+    if data.role is not None and current_user.role != "owner":
+        raise HTTPException(403 , detail="only owners can change roles")
+    
+    if user.role == "owner" and data.role is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Owner role cannot be changed"
+        )
+    
+    if data.email is not None and data.email != user.email:
+        if user_repo.email_exists(data.email):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Email already exists")
+        
+    if data.password is not None:
+        data.password = hash_password(data.password)
+
+    updated_user = user_repo.update(target_user_id, data)
+
+    return updated_user

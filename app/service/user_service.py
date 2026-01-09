@@ -94,6 +94,10 @@ def updateUser(data: UserUpdate, target_user_id: int, current_user: User, db: Se
 
     return updated_user
 
+# ==== Get / Fetch User Functions ==== #
+
+# ------------------------------------------------------------------------------
+# get a user by its id wish a condition that its from ur same organization
 def getUserById(user_id: int, current_user: User, db: Session):
     user_repo = UserRepository(db)
     
@@ -115,3 +119,36 @@ def getUserById(user_id: int, current_user: User, db: Session):
         )
     
     return user
+# --------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------
+# Get current authenticated user's profile with organization details
+def getCurrentUserProfile(current_user: User, db: Session):
+    user_repo = UserRepository(db)
+    
+    # Fetch user with organization details
+    user = user_repo.get_with_organization(current_user.id)
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    return user
+# --------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------
+# Get all users in current user's organization with pagination
+def getAllUsersInOrganization(current_user: User, db: Session, skip: int = 0, limit: int = 10):
+    user_repo = UserRepository(db)
+    
+    # Get all users from the same organization
+    users = user_repo.get_all_by_organization(
+        org_id=current_user.org_id,
+        skip=skip,
+        limit=limit
+    )
+    
+    return users
+# --------------------------------------------------------------------------------

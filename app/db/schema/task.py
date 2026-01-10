@@ -10,7 +10,6 @@ class TaskBase(BaseModel):
 
 class TaskCreate(TaskBase):
     project_id: int
-    org_id: int
 
 
 class TaskUpdate(BaseModel):
@@ -26,3 +25,11 @@ class TaskResponse(TaskBase):
 
     class Config:
         from_attributes = True
+
+
+class TaskStatusUpdate(BaseModel):
+    status: str
+
+
+class TaskAssignment(BaseModel):
+    user_id: int

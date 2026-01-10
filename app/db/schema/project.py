@@ -9,7 +9,6 @@ class ProjectBase(BaseModel):
 
 
 class ProjectCreate(ProjectBase):
-    org_id: int
     deadline: Optional[datetime] = None
 
 

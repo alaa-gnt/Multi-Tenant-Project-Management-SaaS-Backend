@@ -24,3 +24,16 @@ class OrganizationResponse(OrganizationBase):
 
     class Config:
         from_attributes = True
+
+
+class JoinOrganizationRequest(BaseModel):
+    invite_code: str
+
+
+class UpdateMemberRoleRequest(BaseModel):
+    user_id: int
+    new_role: str
+
+
+class TransferOwnershipRequest(BaseModel):
+    new_owner_id: int

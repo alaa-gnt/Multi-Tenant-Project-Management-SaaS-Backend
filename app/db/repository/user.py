@@ -9,7 +9,7 @@ class UserRepository:
         self.db = db
 
     def create(self, user: UserCreate) -> User:
-        """Create a new user"""
+        """Create a new user (without organization initially)"""
         db_user = User(
             name=user.name,
             email=user.email,
@@ -70,3 +70,16 @@ class UserRepository:
         """Check if user belongs to organization"""
         user = self.db.query(User).filter(User.id == user_id, User.org_id == org_id).first()
         return user is not None
+
+    def assign_to_organization(self, user_id: int, org_id: int, role: str) -> Optional[User]:
+        """Assign user to an organization with a role"""
+        db_user = self.get_by_id(user_id)
+        if not db_user:
+            return None
+        
+        db_user.org_id = org_id
+        db_user.role = role
+        
+        self.db.commit()
+        self.db.refresh(db_user)
+        return db_user

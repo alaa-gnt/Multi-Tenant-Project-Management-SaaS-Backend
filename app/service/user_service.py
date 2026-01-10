@@ -15,8 +15,12 @@ def userRegistration(data: UserCreate, db: Session) -> UserResponse:
             detail="Email already exists"
         )
     
+    # User is created without organization or role
+    # They will set this up after login
     hashed_password = hash_password(data.password)
     data.password = hashed_password
+    data.org_id = None
+    data.role = None
     user = user_repo.create(data)
     
     return user
@@ -41,6 +45,9 @@ def userLogin(data: UserLogin, db: Session):
             detail="Invalid email or password"
         )
     
+    # Check if user has organization setup
+    requires_org_setup = user.org_id is None
+    
     # Create access token
     token_data = {
         "user_id": user.id,
@@ -53,6 +60,7 @@ def userLogin(data: UserLogin, db: Session):
     return {
         "access_token": access_token,
         "token_type": "bearer",
+        "requires_org_setup": requires_org_setup,
         "user": {
             "id": user.id,
             "name": user.name,

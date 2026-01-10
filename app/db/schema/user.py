@@ -11,6 +11,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     org_id: Optional[int] = None
+    role: Optional[str] = None
 
 
 class UserUpdate(BaseModel):

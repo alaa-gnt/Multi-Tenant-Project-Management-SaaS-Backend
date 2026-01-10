@@ -8,7 +8,7 @@ class OrganizationBase(BaseModel):
 
 
 class OrganizationCreate(OrganizationBase):
-    owner_id: int
+    pass
 
 
 class OrganizationUpdate(BaseModel):
@@ -20,6 +20,7 @@ class OrganizationUpdate(BaseModel):
 class OrganizationResponse(OrganizationBase):
     id: int
     owner_id: int
+    invite_code: Optional[str] = None
 
     class Config:
         from_attributes = True

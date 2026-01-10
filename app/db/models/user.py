@@ -10,8 +10,8 @@ class User(Base):
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False, index=True)
     password = Column(String, nullable=False)
-    role = Column(String)
-    org_id = Column(Integer, ForeignKey("organizations.id"))
+    role = Column(String, nullable=True)
+    org_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
 
     # Relationships
     organization = relationship("Organization", foreign_keys=[org_id], back_populates="users")

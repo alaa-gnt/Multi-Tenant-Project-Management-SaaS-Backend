@@ -10,6 +10,7 @@ class Organization(Base):
     name = Column(String, nullable=False)
     description = Column(String)
     owner_id = Column(Integer, ForeignKey("users.id"))
+    invite_code = Column(String, unique=True, nullable=True)
 
     # Relationships
     owner = relationship("User", foreign_keys=[owner_id], back_populates="owned_organizations")

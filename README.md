@@ -370,26 +370,7 @@ Separates data access logic from business logic:
 7. Charlie (from different org) cannot see TechCorp's data
 ```
 
-## 📝 TODO / Future Enhancements
-
-- [ ] Add `GET /organizations/members` endpoint to list org members
-- [ ] Implement task assignment to specific users
-- [ ] Add email verification system
-- [ ] Implement password reset functionality
-- [ ] Add email invitations with links
-- [ ] Activity logging and audit trails
-- [ ] Advanced search and filtering
-- [ ] File attachments for tasks
-- [ ] Comments on tasks
-- [ ] Real-time notifications (WebSocket)
-- [ ] Unit and integration tests
-- [ ] Docker Compose for full stack
-- [ ] Environment variables configuration
-- [ ] CORS configuration for frontend
-- [ ] Rate limiting
-- [ ] API versioning
-
-## 🐛 Common Issues
+##  Common Issues
 
 ### Database Connection Error
 - Ensure PostgreSQL is running

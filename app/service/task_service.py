@@ -31,8 +31,12 @@ def createTask(task_data: TaskCreate, current_user: User, db: Session) -> TaskRe
         )
     
     # Create task with user's org_id
-    task_data.org_id = current_user.org_id
-    task = task_repo.create(task_data)
+    task_dict = task_data.model_dump()
+    task_dict['org_id'] = current_user.org_id
+    task = Task(**task_dict)
+    db.add(task)
+    db.commit()
+    db.refresh(task)
     
     return task
 # --------------------------------------------------------------------------------

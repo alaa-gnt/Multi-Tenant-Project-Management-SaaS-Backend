@@ -22,8 +22,12 @@ def createProject(project_data: ProjectCreate, current_user: User, db: Session) 
         )
     
     # Create project with user's org_id
-    project_data.org_id = current_user.org_id
-    project = project_repo.create(project_data)
+    project_dict = project_data.model_dump()
+    project_dict['org_id'] = current_user.org_id
+    project = Project(**project_dict)
+    db.add(project)
+    db.commit()
+    db.refresh(project)
     
     return project
 # --------------------------------------------------------------------------------

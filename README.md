@@ -2,7 +2,7 @@
 
 A robust FastAPI-based backend for a multi-tenant project management SaaS application with organization-based access control, JWT authentication, and comprehensive CRUD operations.
 
-## 🚀 Features
+## 🚀 Features --
 
 ### Core Functionality
 - **User Authentication**: JWT-based authentication with bcrypt password hashing
